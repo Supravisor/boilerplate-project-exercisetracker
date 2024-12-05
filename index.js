@@ -3,6 +3,9 @@ const app = express()
 const cors = require('cors')
 require('dotenv').config()
 
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use(cors())
 app.use(express.static('public'))
 app.get('/', (req, res) => {
@@ -16,3 +19,27 @@ app.get('/', (req, res) => {
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
+
+// array for users
+let userData = [];
+
+// POST for users
+app.post("/api/users", function(req, res) {
+//  let newUser = { "username": "test" };
+  let newUser = { "username": req.body.url };
+  let id = new Date().getTime();
+
+  if (!userData.includes(newUser)) {
+    newUser._id = id;
+    userData.push(newUser);
+  }
+
+console.log(userData);
+
+  res.json( { "username": newUser.username, _id: newUser._id } );
+}
+
+// GET for users
+app.get("/api/users", function(req, res) {
+  res.send("handler");
+});
