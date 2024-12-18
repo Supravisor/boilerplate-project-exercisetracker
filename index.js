@@ -23,14 +23,14 @@ let userData = [];
 
 // POST for users
 app.post("/api/users/", function(req, res) {
-//  let newUser = { "username": "test" };
+
   let newUser = { "username": req.body.username };
-  console.log(newUser);
   let id = new Date().getTime();
 
-  if (!userData.includes(newUser)) {
-    newUser._id = id;
-    userData.push(newUser);
+  for (let i=0; i<userData.length; i++) {
+    if (userData[i].username !== newUser.username) {
+      return userData.push(newUser);
+    }
   }
 
   console.log( { "username": newUser.username, _id: newUser._id } );
