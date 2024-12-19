@@ -25,7 +25,7 @@ let userData = [];
 app.post("/api/users/", function(req, res) {
 
   let newUser = { "username": req.body.username };
-  let id = new Date().getTime();
+  newUser._id = new Date().getTime();
 
   for (let i=0; i<userData.length; i++) {
     if (userData[i].username !== newUser.username) {
@@ -36,21 +36,6 @@ app.post("/api/users/", function(req, res) {
   console.log( { "username": newUser.username, _id: newUser._id } );
   res.json( { "username": newUser.username, _id: newUser._id } );
 });
-
-// POST for username
-app.post("/api/users/username", function(req, res) {
-  //  let newUser = { "username": "test" };
-    let newUser = { "username": req.body.url };
-    let id = new Date().getTime();
-  
-    if (!userData.includes(newUser)) {
-      newUser._id = id;
-      userData.push(newUser);
-    }
-  
-    console.log( { "username": newUser.username, _id: newUser._id } );
-    res.json( { "username": newUser.username, _id: newUser._id } );
-  });
 
 // GET for users
 app.get("/api/users", function(req, res) {
