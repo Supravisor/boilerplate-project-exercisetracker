@@ -38,6 +38,11 @@ app.post("/api/users/", function(req, res) {
 });
 
 // GET for users
-app.get("/api/users", function(req, res) {
-  res.json(userData);
-});
+app.get("/api/users", function (req, res) {
+    let userDataTwo = [ { username: "one", _id: new Date().getTime() }, { username: "two", _id: new Date().getTime() + 720000 } ];
+    const users = userDataTwo;
+    res.json(users.map((user)=>({
+    username: user.username,
+    _id: user._id.toString(),
+    })))
+})
