@@ -20,6 +20,7 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 
 // array for users
 let userData = [];
+let user;
 
 // POST for users
 app.post("/api/users/", function(req, res) {
@@ -35,6 +36,8 @@ app.post("/api/users/", function(req, res) {
 
   console.log( { "username": newUser.username, _id: newUser._id } );
   res.json( { "username": newUser.username, _id: newUser._id } );
+  user = req.body.username;
+  return user;
 });
 
 // GET for users
@@ -53,16 +56,21 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 
   let date;
   if(req.body.date) {
-    date = new Date(parseInt(req.body.date));
-  } else {
-    date = new Date(new Date() - 46872000);
+    date = new Date (req.body.date);
+      } else {
+    date = new Date(new Date() + 46872000 + 69000);
   }
 
-  res.json({
-    _id: req.params._id,
-    username: parseInt(req.params._id),
-    date: date,
-    duration: parseInt(req.body.duration),
-    description: req.body.description
-  });
+  let dateString = date.toUTCString();
+  let parts = dateString.split(' ');
+  date = `${parts[0].replace(',', '')} ${parts[2]} ${parts[1]} ${parts[3]}`;
+
+  let updatedUser = {};
+  updatedUser.username = user;
+  updatedUser.description =  req.body.description;
+  updatedUser.duration = parseInt(req.body.duration);
+  updatedUser.date = date;
+  updatedUser._id= req.params._id;
+
+  res.json({ username: updatedUser.username, description: updatedUser.description, duration: updatedUser.duration, date: updatedUser.date, _id: updatedUser._id } );
 });
