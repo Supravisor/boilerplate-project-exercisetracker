@@ -46,3 +46,23 @@ app.get("/api/users", function (req, res) {
     _id: user._id.toString(),
     })))
 })
+
+// POST a new exercise
+app.post('/api/users/:_id/exercises', (req, res) => {
+  let userDataThree = [ { username: "one", _id: new Date().getTime() }, { username: "two", _id: new Date().getTime() + 720000 } ];
+
+  let date;
+  if(req.body.date) {
+    date = new Date(parseInt(req.body.date));
+  } else {
+    date = new Date(new Date() - 46872000);
+  }
+
+  res.json({
+    _id: req.params._id,
+    username: parseInt(req.params._id),
+    date: date,
+    duration: parseInt(req.body.duration),
+    description: req.body.description
+  });
+});
