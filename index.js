@@ -1,4 +1,3 @@
-
 const express = require('express')
 const app = express()
 const cors = require('cors')
@@ -34,7 +33,6 @@ app.post("/api/users/", function(req, res) {
     }
   }
 
-  console.log( { "username": newUser.username, _id: newUser._id } );
   res.json( { "username": newUser.username, _id: newUser._id } );
   user = req.body.username;
   return user;
@@ -50,12 +48,13 @@ app.get("/api/users", function (req, res) {
     })))
 })
 
+let updatedUser = {};
 let logs = [];
-
+let count = 0;
 // POST a new exercise
 app.post('/api/users/:_id/exercises', (req, res) => {
   let userDataThree = [ { username: "one", _id: new Date().getTime() }, { username: "two", _id: new Date().getTime() + 720000 } ];
-
+  logs = [];
   let date;
   if(req.body.date) {
     date = new Date (req.body.date);
@@ -67,21 +66,28 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   let parts = dateString.split(' ');
   date = `${parts[0].replace(',', '')} ${parts[2]} ${parts[1]} ${parts[3]}`;
 
-  let updatedUser = {};
   updatedUser.username = user;
   updatedUser.description =  req.body.description;
   updatedUser.duration = parseInt(req.body.duration);
-
-  updatedUser.username = user;
+  updatedUser.date = date;
   updatedUser._id= req.params._id;
-  logs.push( {description: req.body.description, duration: parseInt(req.body.duration), date: date });
-
+  count++;
+  logs.push( {
+    description: req.body.description, 
+    duration: parseInt(req.body.duration), 
+    date: date 
+  });
   res.json({ username: updatedUser.username, description: updatedUser.description, duration: updatedUser.duration, date: updatedUser.date, _id: updatedUser._id } );
+  return updatedUser;
 });
 
 app.get("/api/users/:_id/logs", function (req, res) {
-  updatedUser.count = 1;
-  updatedUser.log = logs;
-  res.json(updatedUser)
-})
+  updatedUser.count = count;
 
+  res.json({ 
+    username: updatedUser.username, 
+    count: count,
+    _id: updatedUser._id, 
+    log: logs
+  });
+})
