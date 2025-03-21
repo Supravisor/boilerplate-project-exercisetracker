@@ -113,14 +113,14 @@ app.get("/api/users/:_id/logs", function (req, res) {
       selection.log = selection.log.filter((exercise)=>
       new Date(exercise.date) <= new Date(to))
   } if (limit) {
-      selection.log = selectedPerson.log.slice(0 ,limit);
+      selection.log = selection.log.slice(0 ,limit);
   }
 
   return res.json({
     _id: selection._id.toString(),
     username: selection.username,
     count: selection.log.length,
-    log: selectedPerson.log.map((exercise)=>({
+    log: selection.log.map((exercise)=>({
       description: exercise.description,
       duration: exercise.duration,
       date: exercise.date}))
