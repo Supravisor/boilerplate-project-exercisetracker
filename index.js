@@ -13,10 +13,6 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 });
 
-const listener = app.listen(process.env.PORT || 3000, () => {
-  console.log('Your app is listening on port ' + listener.address().port)
-})
-
 // array for users
 let userData = [];
 let user;
@@ -81,13 +77,65 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   return updatedUser;
 });
 
-app.get("/api/users/:_id/logs", function (req, res) {
-  updatedUser.count = count;
 
-  res.json({ 
-    username: updatedUser.username, 
-    count: count,
-    _id: updatedUser._id, 
-    log: logs
-  });
+app.get("/api/users/:_id/logs", function (req, res) {
+  const { from, to, limit } = req.query;
+
+  if (from || to || limit) {
+  let selection = 
+    {
+      username: "fcc_test",
+      count: 1,
+      _id: "5fb5853f734231456ccb3b05",
+      log: [
+        {
+        description: "test",
+        duration: 60,
+        date: "Mon Dec 31 1989",
+      },
+      {
+        description: "test",
+        duration: 60,
+        date: "Mon Jan 04 1990",
+      },
+      {
+        description: "test",
+        duration: 60,
+        date: "Mon Jan 01 2022",
+      }
+    ]
+    };
+
+  if (from) {
+    selection.log = selection.log.filter((exercise)=>
+     new Date(exercise.date)  >= new Date(from))
+  } if (to) {
+      selection.log = selection.log.filter((exercise)=>
+      new Date(exercise.date) <= new Date(to))
+  } if (limit) {
+      selection.log = selectedPerson.log.slice(0 ,limit);
+  }
+
+  return res.json({
+    _id: selection._id.toString(),
+    username: selection.username,
+    count: selection.log.length,
+    log: selectedPerson.log.map((exercise)=>({
+      description: exercise.description,
+      duration: exercise.duration,
+      date: exercise.date}))
+  })
+  } else {
+      updatedUser.count = count; 
+      return res.json({ 
+        username: updatedUser.username, 
+        count: updatedUser.count,
+        _id: updatedUser._id, 
+        log: logs
+      });
+  }
+});
+
+const listener = app.listen(process.env.PORT || 3000, () => {
+  console.log('Your app is listening on port ' + listener.address().port)
 })
